@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VHB Connect - Kết nối sinh viên</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+
+    <a href="#" class="brand" onclick="showExplore()">
+        <span class="brand-icon">♡</span>
+        <span>VHB CONNECT</span>
+    </a>
+
+    <nav class="nav-center">
+        <button class="nav-link active" id="navExplore"
+                onclick="showExplore()">
+            Khám phá
+        </button>
+
+        <button class="nav-link" id="navRooms"
+                onclick="showMyRooms()">
+            Phòng trò chuyện
+        </button>
+    </nav>
+
+    <div class="nav-right" id="account">
+        <button class="btn secondary"
+                onclick="openAuth('login')">
+            Đăng nhập
+        </button>
+    </div>
+
+</header>
+
+<main class="container">
+
+    <!-- TRANG KHÁM PHÁ -->
+
+    <section id="explore">
+
+        <div class="hero">
+
+            <div class="hero-content">
+                <span class="hero-label">✦ VHB STUDENT COMMUNITY</span>
+
+                <h1>
+                    Kết nối bằng
+                    <span>giọng nói.</span>
+                </h1>
+
+                <p>
+                    Không gian trò chuyện trực tuyến dành riêng
+                    cho sinh viên Đại học VHB.
+                    Gặp gỡ, chia sẻ và kết nối mỗi ngày.
+                </p>
+
+                <div class="hero-actions">
+                    <button class="btn primary"
+                            onclick="createRoomPrompt()">
+                        ＋ Tạo phòng ngay
+                    </button>
+
+                    <button class="btn secondary"
+                            onclick="document.getElementById('rooms').scrollIntoView({behavior:'smooth'})">
+                        Khám phá phòng
+                    </button>
+                </div>
+            </div>
+
+            <div class="hero-decoration">
+                <div class="bubble bubble-one">🎧</div>
+                <div class="bubble bubble-two">💬</div>
+                <div class="bubble bubble-three">🎙️</div>
+                <div class="hero-circle">
+                    <span>♡</span>
+                </div>
+            </div>
+
+        </div>
+
+        <section class="rooms-section" id="rooms">
+
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">DISCOVER</span>
+                    <h2>Khám phá phòng</h2>
+                    <p>Tìm một cuộc trò chuyện thú vị ngay hôm nay.</p>
+                </div>
+
+                <div class="room-total">
+                    <strong id="roomCount">0</strong>
+                    <span>phòng đang mở</span>
+                </div>
+            </div>
+
+            <div class="toolbar">
+
+                <div class="search-box">
+                    <span>⌕</span>
+                    <input id="search"
+                           placeholder="Tìm kiếm phòng trò chuyện..."
+                           oninput="loadRooms()">
+                </div>
+
+                <button class="btn primary"
+                        onclick="createRoomPrompt()">
+                    ＋ Tạo phòng
+                </button>
+
+            </div>
+
+            <div class="categories">
+
+                <button class="chip active"
+                        onclick="setCategory('Tất cả',this)">
+                    Tất cả
+                </button>
+
+                <button class="chip"
+                        onclick="setCategory('Học tập',this)">
+                    📚 Học tập
+                </button>
+
+                <button class="chip"
+                        onclick="setCategory('Âm nhạc',this)">
+                    🎵 Âm nhạc
+                </button>
+
+                <button class="chip"
+                        onclick="setCategory('Đời sống',this)">
+                    ☕ Đời sống
+                </button>
+
+                <button class="chip"
+                        onclick="setCategory('Giải trí',this)">
+                    🎮 Giải trí
+                </button>
+
+            </div>
+
+            <div id="roomsList" class="rooms-grid">
+                <div class="empty-state">Đang tải phòng...</div>
+            </div>
+
+        </section>
+
+    </section>
+
+    <!-- PHÒNG TRÒ CHUYỆN -->
+
+    <section id="myRooms" class="hidden">
+
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">YOUR COMMUNITY</span>
+                <h2>Phòng trò chuyện</h2>
+                <p>Những phòng bạn đang tham gia.</p>
+            </div>
+        </div>
+
+        <div id="myRoomsList" class="rooms-grid"></div>
+
+    </section>
+
+    <!-- GIAO DIỆN TRONG PHÒNG -->
+
+    <section id="roomView" class="hidden"></section>
+
+</main>
+
+<!-- MODAL ĐĂNG NHẬP / ĐĂNG KÝ -->
+
+<div class="modal-overlay hidden" id="authModal">
+
+    <div class="modal">
+
+        <button class="modal-close" onclick="closeAuth()">×</button>
+
+        <div class="modal-logo">♡</div>
+
+        <h2 id="authHeading">Đăng nhập</h2>
+
+        <p class="modal-description">
+            Chào mừng bạn đến với VHB Connect
+        </p>
+
+        <div class="form-group hidden" id="nameLabel">
+            <label>Họ và tên</label>
+            <input id="displayName"
+                   placeholder="Nhập họ và tên của bạn">
+        </div>
+
+        <div class="form-group">
+            <label>Mã sinh viên</label>
+            <input id="username"
+                   placeholder="Nhập mã sinh viên"
+                   autocomplete="username">
+        </div>
+
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <input id="password"
+                   type="password"
+                   placeholder="Nhập mật khẩu"
+                   autocomplete="current-password"
+                   onkeydown="if(event.key==='Enter')submitAuth()">
+        </div>
+
+        <button class="btn primary full-width"
+                onclick="submitAuth()">
+            Tiếp tục
+        </button>
+
+        <button class="switch-auth"
+                id="switchAuth"
+                onclick="switchAuth()">
+            Chưa có tài khoản? Đăng ký
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MODAL TẠO PHÒNG -->
+
+<div class="modal-overlay hidden" id="createRoomModal">
+
+    <div class="modal create-modal">
+
+        <button class="modal-close"
+                onclick="closeCreateRoom()">×</button>
+
+        <div class="modal-logo">🎙️</div>
+
+        <h2>Tạo phòng trò chuyện</h2>
+
+        <p class="modal-description">
+            Tạo không gian riêng để kết nối cùng sinh viên VHB.
+        </p>
+
+        <div class="form-group">
+            <label>Tên phòng</label>
+            <input id="roomTitle"
+                   maxlength="100"
+                   placeholder="Ví dụ: Góc nhỏ tâm sự...">
+        </div>
+
+        <div class="form-group">
+            <label>Mô tả phòng</label>
+            <textarea id="roomDescription"
+                      rows="3"
+                      placeholder="Giới thiệu về phòng của bạn..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Chủ đề phòng</label>
+
+            <div class="topic-grid">
+
+                <button type="button" class="topic-option active"
+                        data-category="Học tập"
+                        onclick="selectTopic(this)">
+                    📚
+                    <span>Học tập</span>
+                </button>
+
+                <button type="button" class="topic-option"
+                        data-category="Âm nhạc"
+                        onclick="selectTopic(this)">
+                    🎵
+                    <span>Âm nhạc</span>
+                </button>
+
+                <button type="button" class="topic-option"
+                        data-category="Đời sống"
+                        onclick="selectTopic(this)">
+                    ☕
+                    <span>Đời sống</span>
+                </button>
+
+                <button type="button" class="topic-option"
+                        data-category="Giải trí"
+                        onclick="selectTopic(this)">
+                    🎮
+                    <span>Giải trí</span>
+                </button>
+
+            </div>
+        </div>
+
+        <button class="btn primary full-width"
+                id="createRoomButton"
+                onclick="submitCreateRoom()">
+            Tạo phòng ngay
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MODAL HỒ SƠ CÁ NHÂN -->
+
+<div class="modal-overlay hidden" id="profileModal">
+
+    <div class="modal profile-modal">
+
+        <button class="modal-close"
+                onclick="closeProfile()">×</button>
+
+        <div class="profile-avatar" id="profileAvatar">♡</div>
+
+        <h2>Hồ sơ cá nhân</h2>
+
+        <p class="modal-description">
+            Thông tin tài khoản sinh viên của bạn.
+        </p>
+
+        <div class="form-group">
+            <label>Mã sinh viên</label>
+            <input id="profileUsername" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>Họ và tên</label>
+            <input id="profileName"
+                   placeholder="Họ và tên">
+        </div>
+
+        <button class="btn primary full-width"
+                onclick="saveProfile()">
+            Lưu thông tin
+        </button>
+
+        <div class="profile-divider"></div>
+
+        <button class="btn logout-btn full-width"
+                onclick="logout()">
+            ↪ Đăng xuất
+        </button>
+
+    </div>
+
+</div>
+
+<!-- THÔNG BÁO -->
+
+<div id="toast" class="toast"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
